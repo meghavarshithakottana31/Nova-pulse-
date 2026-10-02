@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Nova Pulse</title><meta name="theme-color" content="#7c3aed"><meta name="description" content="Nova Pulse: predict stock-outs, prevent cancellations, recover and retain local-commerce customers.">
+<style>
+:root{--bg:linear-gradient(160deg,#ffe0f0 0%,#e4defd 48%,#cdf1ff 100%);--card:rgba(255,255,255,.74);--ink:#1f1740;--mut:#6a6193;--line:rgba(124,58,237,.16);--pri:#7c3aed;--pri2:#ec4899;--bad:#e11d48;--warn:#d97706;--ok:#059669;--glow:0 8px 24px rgba(124,58,237,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:linear-gradient(160deg,#1a0a3c 0%,#2b1170 48%,#0a3a5e 100%);--card:rgba(255,255,255,.08);--ink:#f5efff;--mut:#b7abdd;--line:rgba(255,255,255,.15);--pri:#a78bfa;--pri2:#f472b6;--bad:#ff6b8b;--warn:#ffc857;--ok:#4ade9e;--glow:0 8px 28px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}html,body{margin:0}body{background:transparent;color:var(--ink);min-height:100vh;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+header{padding:14px 16px 6px}h1{font:700 22px Georgia,serif;margin:0}h1 small{font:400 12px system-ui;color:var(--mut);margin-left:6px}
+main{padding:8px 12px;max-width:640px;margin:auto}.c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+h2{font-size:15px;margin:0 0 8px}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.k{border:1px solid var(--line);border-radius:10px;padding:8px}.k b{display:block;font-size:22px}.k span,.m{color:var(--mut);font-size:12px}
+.t{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid currentColor}.HIGH,.bad{color:var(--bad)}.MED,.warn{color:var(--warn)}.LOW,.ok{color:var(--ok)}
+.r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}.r:first-of-type{border-top:0}
+button,select,input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-height:40px}button{background:var(--pri);color:#fff;border:0;font-weight:600}button.s{background:transparent;color:var(--pri);border:1px solid var(--pri)}
+input[type=number]{width:70px}select{width:100%;margin:4px 0}nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}nav button{flex:1;background:none;color:var(--mut);border-radius:0;min-height:56px;font-size:12px}nav button.on{color:var(--pri);box-shadow:inset 0 3px var(--pri)}
+.sim{border:2px dashed var(--warn)}.toast{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 12px;border-radius:10px;z-index:9}
+
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--bg)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 85% 8%,rgba(236,72,153,.28),transparent 42%),radial-gradient(circle at 8% 92%,rgba(56,189,248,.26),transparent 45%)}
+h1{background:linear-gradient(90deg,var(--pri),var(--pri2),#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block}h1 small{-webkit-text-fill-color:var(--mut);display:block;margin:2px 0 0}
+.c{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--glow);border-radius:16px}
+h2{background:linear-gradient(90deg,var(--pri),var(--pri2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}h2 .m{-webkit-text-fill-color:var(--mut)}
+.k{background:linear-gradient(145deg,rgba(124,58,237,.10),rgba(236,72,153,.10));border-color:var(--line);border-radius:14px}
+button{background:linear-gradient(135deg,var(--pri),var(--pri2));box-shadow:0 4px 14px rgba(236,72,153,.28)}button.s{background:transparent;box-shadow:none;color:var(--pri);border-color:var(--pri)}
+nav{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:var(--card);box-shadow:0 -6px 24px rgba(124,58,237,.14)}nav button{box-shadow:none;background:none}nav button.on{color:var(--pri);background:linear-gradient(180deg,rgba(124,58,237,.16),transparent);box-shadow:inset 0 3px var(--pri2)}
+.t{background:rgba(255,255,255,.08)}
+.sim{border:2px dashed var(--pri2);background:linear-gradient(145deg,rgba(236,72,153,.12),rgba(124,58,237,.12))}
+.toast{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;box-shadow:var(--glow)}
+input,select{background:rgba(255,255,255,.12)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--pri2);outline-offset:2px}@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+nav button{padding:0 2px;font-size:11px}.bw{height:8px;border-radius:9px;background:var(--line)}.bw i{display:block;height:8px;border-radius:9px;background:linear-gradient(90deg,var(--pri),var(--pri2))}.lb{display:block;margin:8px 0}.lb input{width:100%}
+</style></head><body><header><h1>Nova Pulse<small>Predict. Prevent. Recover. Retain.</small></h1></header><main id="v"></main><nav id="n"></nav><div id="t" role="status" aria-live="polite"></div>
+<script>
+const H=36e5,KEY='novapulse.v2';
+let DB,REC=[];
+// ---------- Built-in backend (same API contract, runs in the page, saves on this device) ----------
+const Engine=(()=>{let st;
+ const seed=()=>{const n=Date.now(),h=x=>n-x*H;
+  const stores=[[1,'Vijetha','Vijayawada',25,88],[2,'VMR Mart','Vijayawada',35,72],[3,'Metro','Vijayawada',30,80],[4,'Reliance','Guntur',30,85],[5,'Ravi supermarket','Guntur',45,65]].map(a=>({id:a[0],name:a[1],city:a[2],eta:a[3],rel0:a[4]}));
+  const products=[[1,'Rice 5kg',320],[2,'Cooking oil 1L',150],[3,'Toor dal 1kg',165],[4,'Milk 1L',60]].map(a=>({id:a[0],name:a[1],price:a[2]}));
+  const customers=[[1,'Anil','Vijayawada'],[2,'Bhavana','Vijayawada'],[3,'Charan','Guntur'],[4,'Divya','Guntur']].map(a=>({id:a[0],name:a[1],city:a[2],credit:0}));
+  const ages=[2,30,6,44,10,3,26,38,5,18,1,48,8,33,12,4];let k=0,inv=[];
+  stores.forEach(s=>products.forEach(p=>{inv.push({sid:s.id,pid:p.id,qty:3+((s.id*5+p.id*3)%14),t:h(ages[k++%16])})}));
+  const O=[];const mk=(c,p,s,q,status,rec)=>{const pr=products.find(x=>x.id==p).price;O.push({id:O.length+1,cid:c,pid:p,sid:s,qty:q,total:pr*q,status,rec:!!rec,t:n})};
+  [[1,1,1,1,'delivered'],[2,2,2,2,'delivered'],[1,3,1,1,'delivered'],[2,4,2,3,'delivered'],[3,1,3,2,'delivered'],[4,2,4,1,'delivered'],[3,3,3,1,'delivered'],[4,4,4,2,'delivered'],[1,2,1,2,'delivered'],[2,1,2,1,'delivered'],[3,4,3,4,'delivered'],[1,4,1,2,'delivered'],[2,3,2,1,'delivered'],[4,1,4,1,'delivered'],[2,2,2,1,'cancelled'],[4,3,4,2,'cancelled',1],[1,1,1,1,'placed'],[3,2,3,1,'placed']].forEach(a=>mk(...a));
+  return{stores,products,customers,inv,orders:O.reverse(),audit:[{t:n,msg:'Nova Pulse started with sample data'}]}};
+ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+ const init=()=>{try{st=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){st=null}if(!st||!st.inv){st=seed();save()}};
+ const log=m=>{st.audit.unshift({t:Date.now(),msg:m});st.audit=st.audit.slice(0,60)};
+ const clamp=(x,a=0,b=100)=>Math.max(a,Math.min(b,x));
+ const decorate=()=>{const n=Date.now();
+  st.inv.forEach(i=>{i.ageH=(n-i.t)/H;i.conf=Math.round(clamp(100-i.ageH*2.2-(i.qty<3?12:0),15));i.risk=i.conf<50?'HIGH':i.conf<75?'MED':'LOW'});
+  st.stores.forEach(s=>{const o=st.orders.filter(x=>x.sid==s.id);s.rel=Math.round(clamp(s.rel0-6*o.filter(x=>x.status=='cancelled').length+o.filter(x=>x.rec).length*3,20))});
+  st.customers.forEach(c=>{const o=st.orders.filter(x=>x.cid==c.id);c.health=clamp(100-20*o.filter(x=>x.status=='cancelled').length+10*o.filter(x=>x.rec).length)});
+  const N=st.orders.length,can=st.orders.filter(x=>x.status=='cancelled'),live=N?Math.round(can.length/N*1000)/10:0,low=st.inv.filter(i=>i.conf<75).length;
+  st.stats={live,avg:Math.round(st.inv.reduce((a,i)=>a+i.conf,0)/st.inv.length),high:st.inv.filter(i=>i.risk=='HIGH').length,atRisk:st.customers.filter(c=>c.health<80).length,
+   rev:st.orders.filter(x=>x.status=='delivered').reduce((a,x)=>a+x.total,0),lost:can.reduce((a,x)=>a+x.total,0),lowConf:low,proj:Math.round(live*(1-.6*low/st.inv.length)*10)/10,pending:can.filter(x=>!x.rec).length}};
+ const state=()=>{decorate();return st};
+ const recommend=(cid,pid,qty)=>{decorate();const c=st.customers.find(x=>x.id==cid);if(!c)return[];
+  return st.stores.filter(s=>s.city==c.city).map(s=>{const i=st.inv.find(x=>x.sid==s.id&&x.pid==pid),ok=!!i&&i.qty>=qty,cf=i?i.conf:0;
+   return{s,ok,cf,rl:s.rel,score:Math.round(cf*.5+s.rel*.3+clamp(100-s.eta*1.5)*.2)}}).sort((a,b)=>b.ok-a.ok||b.score-a.score)};
+ const ord=id=>st.orders.find(o=>o.id==id);
+ const act={
+  confirm(b){const q=Number(b.quantity);if(!Number.isInteger(q)||q<0||q>999)return{err:'Enter a whole number from 0 to 999.'};const i=st.inv.find(x=>x.sid==b.sid&&x.pid==b.pid);if(!i)return{err:'Item not found.'};i.qty=q;i.t=Date.now();log(`Stock confirmed: ${st.products.find(p=>p.id==b.pid).name} at ${st.stores.find(s=>s.id==b.sid).name} = ${q}`);return{ok:'Stock confirmed. Confidence is back to 100%.'}},
+  orders(b){const q=Number(b.quantity);if(!Number.isInteger(q)||q<1||q>20)return{err:'Quantity must be 1 to 20.'};const r=recommend(b.cid,b.pid,q)[0];if(!r||!r.ok)return{err:'No store in this city has enough stock.'};
+   const i=st.inv.find(x=>x.sid==r.s.id&&x.pid==b.pid),p=st.products.find(x=>x.id==b.pid);i.qty-=q;const o={id:Math.max(0,...st.orders.map(x=>x.id))+1,cid:b.cid,pid:b.pid,sid:r.s.id,qty:q,total:p.price*q,status:'placed',rec:false,t:Date.now()};st.orders.unshift(o);log(`Order #${o.id} placed at ${r.s.name} (${r.cf}% confidence)`);return{ok:`Order #${o.id} placed at ${r.s.name}.`}},
+  deliver(b){const o=ord(b.id);if(!o||o.status!='placed')return{err:'Only placed orders can be delivered.'};o.status='delivered';log(`Order #${o.id} delivered`);return{ok:`Order #${o.id} delivered.`}},
+  cancel(b){const o=ord(b.id);if(!o||o.status!='placed')return{err:'Only placed orders can be cancelled.'};o.status='cancelled';const i=st.inv.find(x=>x.sid==o.sid&&x.pid==o.pid);i.qty=0;i.t=Date.now();log(`Order #${o.id} cancelled: shelf was empty. Stock reset to 0`);return{ok:`Order #${o.id} cancelled. Stock count corrected.`}},
+  recover(b){const o=ord(b.id);if(!o||o.status!='cancelled'||o.rec)return{err:'This order cannot be recovered.'};o.rec=true;st.customers.find(c=>c.id==o.cid).credit+=100;log(`Order #${o.id}: ₹100 recovery credit sent`);return{ok:'₹100 credit sent. Customer health improved.'}},
+  reset(){st=seed();return{ok:'Starting data restored.'}},
+  demo(){st=seed();const n=Date.now();st.inv.forEach(i=>{if((i.sid+i.pid)%2==0)i.t=n-(40+i.pid*4)*H});
+   [[1,2,2,1],[2,1,2,1],[3,3,4,2],[4,4,3,1]].forEach(a=>{const p=st.products.find(x=>x.id==a[1]);st.orders.unshift({id:st.orders.length+1,cid:a[0],pid:a[1],sid:a[2],qty:a[3],total:p.price*a[3],status:'placed',rec:false,t:n})});
+   log('Demo scenario loaded: stale stock counts and 4 open orders');return{ok:'Demo loaded. Follow the 60-second guide on Home.'}}};
+ init();
+ return{call(m,p,b){try{const u=new URL('http://x'+p);
+   if(m=='GET'&&u.pathname=='/state')return{data:state()};
+   if(m=='GET'&&u.pathname=='/recommend'){const q=u.searchParams;return{data:recommend(+q.get('cid'),+q.get('pid'),+q.get('qty'))}}
+   const k=u.pathname.split('/').pop(),f=k=='confirm'?act.confirm:act[k];if(!f)return{err:'Unknown action.'};const r=f(b||{});if(!r.err)save();return r}catch(e){return{err:'Something went wrong. Nothing was changed.'}}}}})();
+async function api(m,p,b){return Engine.call(m,p,b)}
+async function load(){const a=await api('GET','/state');if(a.err){toast(a.err,1);return}DB=a.data;const r=await api('GET',`/recommend?cid=${sel.c}&pid=${sel.p}&qty=${sel.q}`);REC=r.data||[]}
+const S={store:id=>DB.stores.find(s=>s.id==id),prod:id=>DB.products.find(p=>p.id==id),cust:id=>DB.customers.find(c=>c.id==id),
+ conf:i=>i.conf,risk:i=>i.risk,ageH:i=>i.ageH,reliab:id=>S.store(id).rel,health:c=>c.health,stats:()=>DB.stats,recommend:()=>REC};
+const BASE={cancelRate:11,recoveryCredit:100};
+// ---------- Scale layer: synthetic NOVACART-sized history + learned risk model ----------
+const Scale=(()=>{const NS=620,NP=5000,NC=10000,NO=50000,NI=100000,TR=35000;let res=null;
+const rng=a=>()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const sg=z=>1/(1+Math.exp(-z)),W=[-2,0,0,0,0],fx=(c,r,e)=>{const d=(100-c)/100;return[1,d,d*d,(100-r)/100,e/60]};
+const pr=(c,r,e)=>{const x=fx(c,r,e);let z=0;for(let i=0;i<5;i++)z+=x[i]*W[i];return sg(z)};
+function run(){if(res)return res;const R=rng(2026),rel=[],eta=[];
+ for(let s=0;s<NS;s++){rel.push(55+R()*40);eta.push(20+R()*30)}
+ const oc=new Float32Array(NI),os=new Int16Array(NI),lowN=new Int32Array(NS),allN=new Int32Array(NS);
+ for(let i=0;i<NI;i++){const s=Math.floor(R()*NS),age=-12*Math.log(1-R());os[i]=s;oc[i]=Math.max(15,100-2.2*age);allN[s]++;if(oc[i]<75)lowN[s]++}
+ const X=new Float64Array(NO*5),Y=new Uint8Array(NO),C=new Float32Array(NO),St=new Int16Array(NO),hit=new Uint8Array(NC),sku=new Set();let nCu=0;
+ for(let j=0;j<NO;j++){const i=Math.floor(R()*NI),s=os[i],c=oc[i],d=(100-c)/100,p=.03+.4*d*d+.0015*(100-rel[s]),y=R()<p?1:0,cu=Math.floor(R()*NC);
+  Y[j]=y;C[j]=c;St[j]=s;sku.add(Math.floor(R()*NP));const x=fx(c,rel[s],eta[s]);for(let k=0;k<5;k++)X[j*5+k]=x[k];if(y&&!hit[cu]){hit[cu]=1;nCu++}}
+ const g=[0,0,0,0,0];
+ for(let it=0;it<300;it++){g.fill(0);for(let j=0;j<TR;j++){let z=0;for(let k=0;k<5;k++)z+=X[j*5+k]*W[k];const e=sg(z)-Y[j];for(let k=0;k<5;k++)g[k]+=e*X[j*5+k]}for(let k=0;k<5;k++)W[k]-=3*g[k]/TR}
+ const T=NO-TR,sc=new Float64Array(T);for(let j=0;j<T;j++){let z=0;for(let k=0;k<5;k++)z+=X[(TR+j)*5+k]*W[k];sc[j]=z}
+ const ix=Array.from({length:T},(_,i)=>i).sort((a,b)=>sc[a]-sc[b]);let rs=0,P=0;ix.forEach((q,r)=>{if(Y[TR+q]){rs+=r+1;P++}});
+ const auc=(rs-P*(P+1)/2)/(P*(T-P));
+ const B=[['Under 50% (very stale)',0,50],['50 to 74%',50,75],['75 to 89%',75,90],['90 to 100% (fresh)',90,101]].map(a=>({l:a[0],a:a[1],b:a[2],n:0,k:0}));
+ let tot=0,nL=0,kL=0,nF=0,kF=0,pm=0;const can=new Int32Array(NS),oN=new Int32Array(NS);
+ for(let j=0;j<NO;j++){const y=Y[j],c=C[j],s=St[j];tot+=y;can[s]+=y;oN[s]++;const b=B.find(q=>c>=q.a&&c<q.b);b.n++;b.k+=y;
+  if(c<75){nL++;kL+=y;pm+=pr(c,rel[s],eta[s])-pr(100,rel[s],eta[s])}if(c>=90){nF++;kF+=y}}
+ B.forEach(b=>{b.rate=b.k/b.n;b.ci=1.96*Math.sqrt(b.rate*(1-b.rate)/b.n)});
+ const rL=kL/nL,rF=kF/nF,prev=nL*Math.max(0,rL-rF);
+ const top=[...Array(NS).keys()].map(s=>({s:s+1,rate:can[s]/oN[s],stale:lowN[s]/allN[s],can:can[s]})).sort((a,b)=>b.can-a.can).slice(0,5);
+ return res={rate:tot/NO,tot,B,auc,nL,rL,rF,prev,relRed:prev/tot,relMod:pm/tot,top,nCu,nSku:sku.size,stale:lowN.reduce((a,v)=>a+v,0)/NI,P,T}}
+return{run,pr,NS,NP,NC,NO,NI,get res(){return res}}})();
+// ---------- UI ----------
+let tab='home',sel={c:1,p:1,q:1};
+const tabs=[['home','Home'],['stock','Stock'],['orders','Orders'],['people','People'],['evid','Evidence'],['roi','Impact'],['log','Audit']];
+const toast=(m,bad)=>{const t=document.getElementById('t');t.innerHTML=`<div class="toast">${bad?'⚠ ':'✓ '}${m}</div>`;setTimeout(()=>t.innerHTML='',2800)};
+const tag=r=>`<span class="t ${r}">${r}</span>`,rs=n=>'₹'+n.toLocaleString('en-IN');
+function view(){const st=S.stats();let h='';
+ if(tab=='home'){h=`<div class="c"><h2>Try it in 60 seconds</h2><ol class="m" style="margin:0 0 10px;padding-left:18px;font-size:13px"><li>Tap <b>Load demo scenario</b> below.</li><li>Open <b>Orders</b> and tap <b>Shelf empty</b> on an open order. The cancellation rate goes up.</li><li>Tap <b>Send ₹100 credit</b> on that cancelled order. Customer health recovers.</li><li>Open <b>Stock</b> and tap <b>Confirm</b> on a risky item. Its confidence returns to 100%.</li><li>Return to <b>Home</b> to see the numbers change. <b>Audit</b> logs every step.</li></ol><button data-a="demo">Load demo scenario</button></div><div class="c"><h2>Live network health</h2><div class="g">
+ <div class="k"><b class="${st.live>BASE.cancelRate?'bad':'ok'}">${st.live}%</b><span>Live cancellation rate (case baseline ${BASE.cancelRate}%)</span></div>
+ <div class="k"><b>${st.avg}%</b><span>Average stock confidence</span></div>
+ <div class="k"><b class="bad">${st.high}</b><span>High-risk items</span></div>
+ <div class="k"><b class="warn">${st.atRisk}</b><span>Customers at risk</span></div>
+ <div class="k"><b>${rs(st.rev)}</b><span>Delivered revenue</span></div>
+ <div class="k"><b class="bad">${rs(st.lost)}</b><span>Lost to cancellations</span></div></div></div>
+ <div class="c"><h2>Fix first: highest risk items</h2>${DB.inv.filter(i=>S.risk(i)!='LOW').sort((a,b)=>S.conf(a)-S.conf(b)).slice(0,5).map(i=>row(i)).join('')||'<p class="m">No risky items. Stock data is fresh.</p>'}</div>
+ <div class="c sim"><h2>SCENARIO SIMULATION (not real)</h2><p class="m">${Scale.res?`If every order placed on a count under 75% confidence were recounted first, cancellations would fall from ${st.live}% to about <b>${Math.round(st.live*(1-Scale.res.relRed)*10)/10}%</b>. This uses the cancellation pattern in ${nn(Scale.NO)} synthetic historical orders, not a guess. ${st.lowConf} items are under 75% right now.`:'Calculating from 50,000 historical orders…'}</p><button class="s" data-a="go" data-v="evid">See the evidence</button></div>
+ ${st.pending?`<div class="c"><h2>${st.pending} cancelled order(s) need recovery</h2><button data-a="go" data-v="orders">Open orders</button></div>`:''}`}
+ if(tab=='stock'){h=DB.stores.map(s=>`<div class="c"><h2>${s.name} <span class="m">${s.city} · ${s.eta} min · reliability ${S.reliab(s.id)}%</span></h2>${DB.inv.filter(i=>i.sid==s.id).map(row).join('')}</div>`).join('')}
+ if(tab=='orders'){const r=S.recommend(sel.c,sel.p,sel.q),b=r[0];
+  h=`<div class="c"><h2>New order</h2><select data-a="sel" data-k="c">${DB.customers.map(c=>`<option value="${c.id}" ${c.id==sel.c?'selected':''}>${c.name} (${c.city})</option>`).join('')}</select>
+  <select data-a="sel" data-k="p">${DB.products.map(p=>`<option value="${p.id}" ${p.id==sel.p?'selected':''}>${p.name} ${rs(p.price)}</option>`).join('')}</select>
+  <input type="number" min="1" max="20" value="${sel.q}" data-a="sel" data-k="q" aria-label="Quantity"> qty
+  ${b&&b.ok?`<div class="k" style="margin:8px 0"><b>Recommended: ${b.s.name}</b><span>Why: ${b.cf}% stock confidence,${Scale.res?` ${(Scale.pr(b.cf,b.rl,b.s.eta)*100).toFixed(1)}% predicted cancellation risk,`:''} ${b.s.eta}-minute delivery, store reliability ${b.rl}%. Score ${b.score}.<br>Alternatives: ${r.slice(1).map(x=>x.ok?`${x.s.name} (${x.score})`:`${x.s.name} (short on stock)`).join(', ')||'none'}</span></div><button data-a="place">Place order at ${b.s.name}</button>`:'<p class="bad">No store in this city has enough stock.</p>'}</div>
+  <div class="c"><h2>Orders</h2>${DB.orders.slice(0,15).map(o=>`<div class="r"><div>#${o.id} ${o.qty}×${S.prod(o.pid).name}<br><span class="m">${S.cust(o.cid).name} · ${S.store(o.sid).name} · ${rs(o.total)}</span></div><div style="text-align:right">${tag(o.status=='cancelled'?'HIGH':o.status=='placed'?'MED':'LOW').replace('>'+(o.status=='cancelled'?'HIGH':o.status=='placed'?'MED':'LOW'),'>'+o.status)}<br>
+  ${o.status=='placed'?`<button class="s" data-a="deliver" data-id="${o.id}">Deliver</button> <button class="s" data-a="stockout" data-id="${o.id}">Shelf empty</button>`:''}${o.status=='cancelled'&&!o.rec?`<button data-a="recover" data-id="${o.id}">Send ${rs(BASE.recoveryCredit)} credit</button>`:''}${o.rec?'<span class="m">recovered</span>':''}</div></div>`).join('')}</div>`}
+ if(tab=='people'){h=`<div class="c"><h2>Customer health</h2>${DB.customers.map(c=>{const hl=c.health,r=hl<50?'HIGH':hl<80?'MED':'LOW';return`<div class="r"><div>${c.name}<br><span class="m">${c.city} · credit ${rs(c.credit)}</span></div>${tag(r).replace('>'+r,'>'+hl+'%')}</div>`}).join('')}<p class="m">Health = 100 − 20 per cancelled order + 10 per recovered one.</p></div>`}
+ if(tab=='log'){h=`<div class="c"><h2>Audit trail</h2>${DB.audit.map(a=>`<div class="r"><div>${a.msg}<br><span class="m">${new Date(a.t).toLocaleString()}</span></div></div>`).join('')||'<p class="m">Nothing yet. Confirm stock or place an order.</p>'}</div><div class="c"><button class="s" data-a="reset">Reset all data</button></div>`}
+ if((tab=='evid'||tab=='roi')&&!Scale.res)h='<div class="c"><h2>Crunching 50,000 orders…</h2><p class="m">Building the 620-store history and training the risk model on your phone. A few seconds.</p></div>';else if(tab=='evid')h=evid();else if(tab=='roi')h=roi();
+ document.getElementById('v').innerHTML=h;
+ document.getElementById('n').innerHTML=tabs.map(t=>`<button class="${t[0]==tab?'on':''}" data-a="go" data-v="${t[0]}">${t[1]}</button>`).join('')}
+const IMP={aov:450,mg:15,fail:40,rec:30,up:10,ord:4},COST=[['Backend and database',4],['Inventory integration',3],['Dashboard and product development',6],['Store onboarding',4],['Notifications',2],['Analytics and monitoring',2],['Contingency',4]];
+const f1=x=>(x*100).toFixed(1)+'%',nn=x=>Math.round(x).toLocaleString('en-IN'),L=x=>'₹'+(x/1e5).toFixed(1)+' lakh',bar=(v,m=100)=>`<div class="bw"><i style="width:${Math.min(100,v/m*100)}%"></i></div>`;
+function evid(){const r=Scale.res,sv=[['Prices or fees higher than expected',38],['Delivery time',34],['Availability problems',29,1],['Confusing discounts',24],['Prefer nearby stores',21],['Refund problems',16]],k=(b,t)=>`<div class="k"><b>${b}</b><span>${t}</span></div>`;
+ return `<div class="c"><h2>Why inventory first?</h2>${sv.map(a=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between"><span class="${a[2]?'ok':''}">${a[0]}${a[2]?' (our focus)':''}</span><b>${a[1]}%</b></div>${bar(a[1],40)}</div>`).join('')}<p class="m">Only 31% place a second order within 30 days, but customers who reach 3 orders reorder with 72% probability. So early orders matter most, and a stock-out ruins exactly those: it causes a cancellation, a refund problem and a lost repeat customer at once, and a store can fix it with a recount. Prices and delivery time are bigger complaints, but they need pricing and logistics changes beyond a ₹25 lakh software budget. That is our judgement; the case data does not measure which fix pays back most.</p></div>
+<div class="c"><h2>Network at NOVACART scale</h2><div class="g">${k(Scale.NS,'stores')}${k(nn(Scale.NP),'products in catalogue ('+nn(r.nSku)+' sold)')}${k(nn(Scale.NC),'customers ('+nn(r.nCu)+' hit by a stock-out)')}${k(nn(Scale.NI),'stock counts recorded')}${k(nn(Scale.NO),'historical orders')}${k(f1(r.stale),'of counts under 75% confidence')}</div><p class="m">This history is generated on your phone from a fixed seed. It is synthetic, not NOVACART data. Real exports would replace it with no change to the analysis.</p></div>
+<div class="c"><h2>Does stale stock cause cancellations?</h2>${r.B.map(b=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between"><span>${b.l}</span><b>${f1(b.rate)}</b></div>${bar(b.rate*100,30)}<span class="m">±${f1(b.ci)} (95% range) · ${nn(b.n)} orders</span></div>`).join('')}<p class="m">Cancellation rate by how confident we were in the count when the order arrived.</p></div>
+<div class="c"><h2>Learned cancellation-risk model</h2><p class="m">A logistic regression trained on 70% of orders (${nn(Scale.NO*.7)}) and tested on the other 30% it never saw. Accuracy of ranking risky orders (AUC): <b>${r.auc.toFixed(2)}</b> (0.5 is a coin flip, 1.0 is perfect). It is statistics, not generative AI. Because this history is synthetic, the score shows the pipeline works, not that real stores behave this way. Real validation needs NOVACART order history.</p></div>
+<div class="c sim"><h2>Intervention simulation</h2><p class="m">${nn(r.nL)} orders arrived on counts under 75%. They cancelled at ${f1(r.rL)} versus ${f1(r.rF)} for fresh counts. If those counts had been recounted first: about <b>${nn(r.prev)}</b> of ${nn(r.tot)} cancellations avoided (<b>${f1(r.relRed)}</b>). Cross-check from the learned model: ${f1(r.relMod)}.</p></div>
+<div class="c"><h2>Recount these stores first</h2>${r.top.map(t=>`<div class="r"><div>Store #${t.s}<br><span class="m">${f1(t.stale)} of counts stale</span></div><div><b class="bad">${f1(t.rate)}</b> <span class="m">cancelled</span></div></div>`).join('')}</div>
+<div class="c"><h2>Architecture and honest limits</h2><p class="m">Today: phone browser → JavaScript API layer → business logic → storage on this device. The screens only talk to that API (state, recommend, orders), so moving the logic to a server with a PostgreSQL or Supabase database means swapping one function, not rebuilding the screens. It is not a real server database yet.<br><br>Store ranking is a fixed formula: 50% stock confidence, 30% store reliability, 20% delivery speed. The learned model estimates the cancellation risk of the chosen store.</p></div>`}
+function calc(){const r=Scale.res,I=IMP,can=38500*BASE.cancelRate/100,prev=can*r.relRed,ro=(can-prev)*I.rec/100,ret=prev*I.up/100,
+ gp=(prev*I.aov+ro*I.aov+ret*I.ord*I.aov)*I.mg/100+prev*I.fail-ro*BASE.recoveryCredit,ramp=[.1,.4,.7,1,1,1];let cum=0,pay=0,c6=0,c12=0;
+ for(let m=1;m<=60;m++){cum+=gp*(ramp[m-1]??1);if(!pay&&cum>=2.5e6)pay=m;if(m==6)c6=cum;if(m==12)c12=cum}return{prev,ro,ret,gp,c6,c12,pay}}
+function roi(){const c=calc(),tot=COST.reduce((a,x)=>a+x[1],0);
+ return `<div class="c"><h2>₹25 lakh, six months</h2>${COST.map(x=>`<div class="r"><span>${x[0]}</span><b>₹${x[1]}L</b></div>`).join('')}<div class="r"><b>Total</b><b>₹${tot}L</b></div></div>
+<div class="c"><h2>Your assumptions <span class="m">(edit them)</span></h2>${[['aov','Average order value (₹)'],['mg','Contribution margin (%)'],['fail','Handling cost saved per avoided cancellation (₹)'],['rec','Cancelled customers who reorder after the ₹100 credit (%)'],['up','Extra repeat chance for customers spared a failure (points)'],['ord','Future orders per retained customer']].map(a=>`<label class="lb m">${a[1]}<input type="number" min="0" data-a="imp" data-k="${a[0]}" value="${IMP[a[0]]}"></label>`).join('')}<p class="m">Fixed from the case: 38,500 monthly orders, ${BASE.cancelRate}% cancellations. Cancellations avoided come from the historical simulation (${f1(Scale.res.relRed)}).</p></div>
+<div class="c"><h2>Expected result</h2><div class="g"><div class="k"><b>${nn(c.prev)}</b><span>cancellations avoided per month</span></div><div class="k"><b>${nn(c.ro)}</b><span>customers won back per month</span></div><div class="k"><b>${nn(c.ret)}</b><span>customers retained per month</span></div><div class="k"><b>${L(c.gp)}</b><span>profit per month at full effect</span></div><div class="k"><b class="${c.c6>=2.5e6?'ok':'bad'}">${L(c.c6)}</b><span>profit in 6 months</span></div><div class="k"><b>${c.pay?'Month '+c.pay:'Beyond 5 years'}</b><span>payback of ₹25 lakh</span></div></div>
+<p class="m">Chain: ₹25 lakh → ${nn(c.prev)} fewer cancellations a month → ${nn(c.ro)} recovered orders → ${nn(c.ret)} retained customers → ${L(c.gp)} extra profit a month. Benefits ramp up over the first four months. Profit after 12 months: ${L(c.c12)}.</p></div>`}
+function row(i){const c=S.conf(i),r=S.risk(i);return`<div class="r"><div>${S.prod(i.pid).name}${tab=='home'?` · ${S.store(i.sid).name}`:''} ${tag(r)}<br><span class="m">${i.qty} in system · ${c}% confidence · counted ${Math.round(S.ageH(i))}h ago</span></div><div><input type="number" min="0" aria-label="Counted quantity" id="q${i.sid}_${i.pid}" value="${i.qty}"> <button data-a="confirm" data-s="${i.sid}" data-p="${i.pid}">Confirm</button></div></div>`}
+let busy=false;
+document.addEventListener('click',async e=>{const b=e.target.closest('button[data-a]');if(!b||busy)return;const a=b.dataset.a,d=b.dataset;let r;
+ if(a=='go'){tab=d.v;view();return}
+ busy=true;b.disabled=true;
+ if(a=='confirm')r=await api('POST','/inventory/confirm',{sid:+d.s,pid:+d.p,quantity:document.getElementById(`q${d.s}_${d.p}`).value});
+ else if(a=='place')r=await api('POST','/orders',{cid:sel.c,pid:sel.p,quantity:sel.q});
+ else if(a=='deliver')r=await api('POST','/orders/deliver',{id:+d.id});else if(a=='stockout')r=await api('POST','/orders/cancel',{id:+d.id});else if(a=='recover')r=await api('POST','/orders/recover',{id:+d.id});
+ else if(a=='demo')r=await api('POST','/demo');
+ else if(a=='reset'&&confirm('Erase all changes and restore the starting data?'))r=await api('POST','/reset');
+ if(r)toast(r.err||r.ok,!!r.err);await load();busy=false;view()});
+document.addEventListener('change',async e=>{const t=e.target;if(t.dataset.a=='imp'){IMP[t.dataset.k]=Math.max(0,Number(t.value)||0);view();return}if(t.dataset.a=='sel'){sel[t.dataset.k]=Number(t.value)||1;await load();view()}});
+load().then(view).then(()=>setTimeout(()=>{Scale.run();view()},60));
+</script></body></html>
